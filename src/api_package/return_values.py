@@ -69,12 +69,10 @@ def return_dividends(api_key):
 
 def return_balances(api_key):
     balances = connection.get_balances(api_key)
-
     cash = balances['free']
     amount_invested = balances['invested']
     portfolio_value = balances['total']
     current_p_and_l = balances['ppl']
-
     balances = {'cash': cash, 'amount_invested': amount_invested, 'account_value':
                 portfolio_value, 'current_p_and_l': current_p_and_l}
     return balances

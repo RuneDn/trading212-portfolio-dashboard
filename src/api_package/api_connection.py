@@ -17,7 +17,6 @@ def get_balances(api_key):
 def get_positions(api_key):
     url = "https://live.trading212.com/api/v0/equity/portfolio"
     headers = {"Authorization": f"{api_key}"}
-
     try:
         response = requests.get(url, headers=headers)
         positions = response.json()
@@ -31,7 +30,6 @@ def get_dividends(api_key):
     url = "https://live.trading212.com/api/v0/history/dividends"
     headers = {"Authorization": f"{api_key}"}
     dividends = {'items': [], 'nextPagePath': ""}
-
     while True:
         if len(dividends["items"]) == 0:
             query = {"cursor": "", "ticker": "", "limit": "50"}

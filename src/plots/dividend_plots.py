@@ -13,7 +13,6 @@ def handle_base_dividends(base_df: pd.DataFrame):
 def fig_yearly_bar(df: pd.DataFrame):
     fig = plt.figure()
     ax = fig.add_subplot()
-
     x_vals = np.flip(df['year'].unique())
     x = []
     for d in x_vals:
@@ -93,15 +92,6 @@ def div_per_month_bar(df: pd.DataFrame):
     ax.grid(True, axis='y', linestyle='-', linewidth=0.5, color='w', zorder=0, alpha=0.1)
     fig.set_facecolor('#0E1117')
 
-    '''
-    cursor = mplcursors.cursor(hover=mplcursors.HoverMode.Transient)
-    @cursor.connect("add")
-    def on_add(sel):
-        x, y, width, height = sel.artist[sel.index].get_bbox().bounds
-        sel.annotation.set(text=f"{x+width/2}: {height}",
-                        position=(0, 20), anncoords="offset points")
-        sel.annotation.xy = (x + width / 2, y + height)
-    '''
     x = np.array([])
     for i in range(len(monthly_dividends)):
         x = np.append(x, i)
@@ -111,44 +101,4 @@ def div_per_month_bar(df: pd.DataFrame):
     avg_div_month = p(x[len(x) - 1])
     plt.plot(x, p(x), alpha=0.5, color='g')
     
-    '''
-    Display point coordinates on plot
-    for xy in zip(x, p(x)):
-        xy = xy
-    plt.annotate('(%.0f, %.2f)' % xy, xy=xy, color='w', alpha=0.5)
-    '''
     return fig, avg_div_month
-
-
-# def multi_year_div_bar(df = pd.DataFrame):
-    df = df[['amount', 'month', 'year']]
-    dfs = [x for _, x in df.groupby('year')]
-    for i, d in enumerate(dfs):
-        print(f'old: {d}')
-        if len(d['month'].unique()) < 12:
-            nr_of_rows = 12 - len(d['month'].unique())
-            amounts, months, years = ([], ) * 3
-            for i in reversed(range(nr_of_rows)):
-                amounts.append(0)
-                months.append(i)
-                years.append(d['year'].unique())
-            rows = {'amount': amounts,
-                    'month': months,
-                    'year': years}
-            print(rows)
-            rows_df = pd.DataFrame.from_dict(rows)
-            print(f'rows df: {rows_df}')
-            d = pd.concat([d, rows_df])
-            print(d.tail())
-        print(f'new: {d.tail(10)}')
-        dfs[i] = d.groupby('month')['amount'].sum()
-    # print(dfs)
-    
-    gap = .8 / 12
-    for i, d in enumerate(dfs):
-        X = np.arange(12)
-        plt.bar(X + i * gap, d,
-            width = gap,
-            # color = color_list[i % len(color_list)]
-            )
-    plt.show() 

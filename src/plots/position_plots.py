@@ -224,14 +224,6 @@ def stocks_tree(df: pd.DataFrame, *args):
         rgba_colors_final = rgba_colors
     else:
         rgba_colors_final = rgba_colors2
-        
-    '''
-    labels = []
-    for t, p_l, p in zip(sorted_positions['ticker'][sorted_positions['is_ETF'] == 0], 
-                    sorted_positions['p_l'][sorted_positions['is_ETF'] == 0],
-                    sorted_positions['position'][sorted_positions['is_ETF'] == 0]):
-        labels.append(f'{t}\n€{round(p, 2)}\n(€{p_l})')
-    '''
 
     fig = plt.figure(figsize=[10, 4])
     ax = sq.plot(sizes=sizes,

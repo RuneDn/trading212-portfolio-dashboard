@@ -31,11 +31,13 @@ def load_pplots_pie():
     pie = pplts.fig_options_pie(positions_df, 'etfs', 'stocks')
     return etf_pie, stock_pie, pie
 
+
 def load_pplots_bar():
     all_positions_bar = pplts.fig_all_positions_bar(positions_df)
     stock_bar = pplts.fig_stock_positions_bar(positions_df)
     etf_bar = pplts.fig_etf_positions_bar(positions_df)
     return all_positions_bar, stock_bar, etf_bar
+
 
 def load_pplots_tree():
     stocks_tree_all, tree_data_all = pplts.stocks_tree(positions_df, 'all')
@@ -68,18 +70,15 @@ if "my_input" not in st.session_state:
 
 api_key = st.text_input('Your trading :blue[212] API key here \
                         (Trading 212 > Settings > API > Generate API Key)', st.session_state["my_input"])
-
 st.write("Note: Loading the data may take some time, mainly depending on the amount of dividend payouts, \
          since the Trading 212 API only allows a set amount of requests per minute.")
 
-balances, dividends_df, positions_df = load_data(api_key)
 
+balances, dividends_df, positions_df = load_data(api_key)
 
 st.divider()
 
-
 st.header('Your Trading :blue[212] Portfolio Dashboard', anchor=False)
-
 tab1, tab2 = st.tabs(["Overview", "Breakdown"])
 with tab1:
     col1, col2 = st.columns([2, 2])
@@ -95,7 +94,6 @@ with tab1:
                 st.write(f'P/L: :green[€{balances["current_p_and_l"]}]')
             else:
                 st.write(f'P/L: :red[€{balances["current_p_and_l"]}]')
-        
     with col2:
         total, stocks_total, etfs_total = etf_stock_div_values(dividends_df)
         st.subheader(f'Total dividends: :green[€{round(total, 2)}]', anchor=False)
@@ -125,7 +123,6 @@ with col4:
 st.divider()
 
 st.subheader('Positions')
-
 etf_pie, stock_pie, pie = load_pplots_pie()
 all_positions_bar, stock_bar, etf_bar = load_pplots_bar()
 stocks_tree_all, tree_data_all, stocks_tree_stocks, tree_data_stocks, stocks_tree_etfs, tree_data_etfs = load_pplots_tree()
@@ -189,7 +186,6 @@ with col111:
         with col_right:
             st.write("Stocks:")
             st.write(div_stocks)
-
 with col222:
     tab1, tab2 = st.tabs(["Chart", "Data"])
     with tab1:
