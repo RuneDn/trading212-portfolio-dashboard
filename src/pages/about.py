@@ -17,5 +17,7 @@ st.markdown(
             LinkedIn: [Rune De Neve](https://www.linkedin.com/in/rune-de-neve)
             
             E-mail: runedeneve@hotmail.be
+
+            Github repo of this project: [Github](https://github.com/RuneDn/trading212-portfolio-dashboard)
             """
         )
