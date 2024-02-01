@@ -13,7 +13,6 @@ def load_data(api_key):
     
     dividends_df = dplts.handle_base_dividends(dividends_df_temp)
     positions_df = pplts.handle_base_positions(positions_df_temp)
-    print('data loaded')
     return balances, dividends_df, positions_df
 
 

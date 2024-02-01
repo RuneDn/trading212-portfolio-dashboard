@@ -9,7 +9,6 @@ def get_balances(api_key):
         response = requests.get(url, headers=headers)
         balances = response.json()
     except requests.exceptions.RequestException as e:
-        print('Failed')
         raise SystemExit(e)
     return balances
 
@@ -21,7 +20,6 @@ def get_positions(api_key):
         response = requests.get(url, headers=headers)
         positions = response.json()
     except requests.exceptions.RequestException as e:
-        print('Failed')
         raise SystemExit(e)
     return positions
 
@@ -39,7 +37,6 @@ def get_dividends(api_key):
             response = requests.get(url, headers=headers, params=query)
             response = response.json()
         except requests.exceptions.RequestException as e:
-            print('Failed')
             raise SystemExit(e)
         
         if 'errorMessage' in response:
