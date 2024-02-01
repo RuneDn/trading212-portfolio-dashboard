@@ -60,6 +60,9 @@ def stocks_etfs_div_line(df: pd.DataFrame, stocks = None):
         y = new_df['amount'][new_df['ticker'] == s]
         ax.plot(x, y, zorder=3)
 
+    totals_df = new_df.groupby('ticker').agg({"amount": ["count", "sum"]}).reset_index()
+    totals_df.columns = ['ticker', 'payments', 'total(€)']
+
     ax.spines['top'].set_color('#0E1117')
     ax.spines['right'].set_color('#0E1117')
     ax.spines['bottom'].set_color('#0E1117')
@@ -70,7 +73,7 @@ def stocks_etfs_div_line(df: pd.DataFrame, stocks = None):
     ax.set_facecolor('#0E1117')
     ax.grid(True, axis='y', linestyle='-', linewidth=0.5, color='w', zorder=0, alpha=0.1)
     fig.set_facecolor('#0E1117')
-    return fig, new_df
+    return fig, new_df, totals_df
 
 
 def div_per_month_bar(df: pd.DataFrame):

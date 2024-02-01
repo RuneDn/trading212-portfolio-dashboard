@@ -187,7 +187,7 @@ with col111:
             st.write("Stocks:")
             st.write(div_stocks)
 with col222:
-    tab1, tab2 = st.tabs(["Chart", "Data"])
+    tab1, tab2, tab3 = st.tabs(["Chart", "Data", "More metrics"])
     with tab1:
         s = st.text_input("Position(s) - to add multiple tickers: msft, aapl, ... (not case sensitive)", value='MSFT')
         stocks_list = s.upper().replace(' ', '').split(',')
@@ -196,3 +196,5 @@ with col222:
 
     with tab2:
         st.write(test[1].reset_index()[['ticker', 'amount', 'pay_date']])
+    with tab3:
+        st.write(test[2])
