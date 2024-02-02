@@ -17,13 +17,10 @@ def handle_base_df(base_df: pd.DataFrame):
     for i, row in base_df.iterrows():
         current_ticker = row['ticker']
         base_df.at[i, 'is_ETF'] = round(is_etf(current_ticker))
-        #base_df['is_ETF'][i] = is_etf(current_ticker)
         if base_df['is_ETF'][i]:
             base_df.at[i, 'ticker'] = current_ticker.split('_')[0][:-1]
-            #base_df['ticker'][i] = current_ticker.split('_')[0][:-1]
         else:
             base_df.at[i, 'ticker'] = current_ticker.split('_')[0]
-            #base_df['ticker'][i] = current_ticker.split('_')[0]
     return base_df
 
 
