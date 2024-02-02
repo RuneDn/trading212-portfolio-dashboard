@@ -172,7 +172,7 @@ def stocks_tree(df: pd.DataFrame, *args):
         labels = [] 
         for t, r in zip(sorted_positions['ticker'][sorted_positions['is_ETF'] == 0],
                         sorted_positions['return'][sorted_positions['is_ETF'] == 0]):
-            labels.append(f'{t}\n{round(r, 2)}')
+            labels.append(f'{t}\n{round(r, 4):.2%}')
         sizes = sorted_positions['position'][sorted_positions['is_ETF'] == 0]
     
     if args[0] == 'etfs':
@@ -188,7 +188,7 @@ def stocks_tree(df: pd.DataFrame, *args):
         labels = []
         for t, r in zip(sorted_positions['ticker'][sorted_positions['is_ETF'] == 1],
                         sorted_positions['return'][sorted_positions['is_ETF'] == 1]):
-            labels.append(f'{t}\n{round(r, 2)}')
+            labels.append(f'{t}\n{round(r, 4):.2%}')
         sizes = sorted_positions['position'][sorted_positions['is_ETF'] == 1]
     
     if args[0] == 'all':
@@ -201,7 +201,7 @@ def stocks_tree(df: pd.DataFrame, *args):
         data = sorted_positions.reset_index()[['ticker', 'position', 'p_l', 'return']]
         labels = []
         for t, r in zip(sorted_positions['ticker'], sorted_positions['return']):
-            labels.append(f'{t}\n{round(r, 2)}')
+            labels.append(f'{t}\n{round(r, 4):.2%}')
         sizes = sorted_positions['position']
     
     if alphas_gainers is not None:
