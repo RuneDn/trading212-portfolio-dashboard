@@ -1,6 +1,6 @@
 # Trading <span style="color:SteelBlue"> 212 </span> portfolio tracker
 
-After cloning the repository, navigate to it on a terminal. 
+After cloning the repository, navigate to it on a terminal (type `cd "path"`, replacing "path" with the path to the folder you just cloned). 
 
 Start by running this command:
 
