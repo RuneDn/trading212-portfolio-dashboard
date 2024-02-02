@@ -1,6 +1,18 @@
 # Trading <span style="color:SteelBlue"> 212 </span> portfolio tracker
 
-After cloning the repository, navigate to it on a terminal and use command `streamlit run src/dashboard.py` to run the program in a browser.
+After cloning the repository, navigate to it on a terminal. 
+
+Start by running this command:
+
+ `pip install -r requirements.txt` 
+ 
+ This ensures all required packages are available.
+
+Then use command 
+
+`streamlit run src/dashboard.py` 
+
+to run the program in a browser.
 
 Follow the instructions on screen to obtain your trading 212 API key, paste it in the text box and press enter. 
 
