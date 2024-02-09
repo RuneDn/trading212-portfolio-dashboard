@@ -38,11 +38,17 @@ def fig_all_pie(df: pd.DataFrame, cash, p_l):
     sorted_positions_invested_amount = specific_positions_dfs(df)[4][['ticker', 'amount_invested', 'p_l', 'p_l_fx']]
     fx = sorted_positions_invested_amount['p_l_fx'].sum()
 
-    if fx >= 0:
+    if fx >= 0 and p_l >= 0:
         temp_df_pl = pd.DataFrame.from_dict({'ticker': ['P/L'], 'amount_invested': [p_l - fx], 'p_l': [0], 'p_l_fx': [0]})
         temp_df_plfx = pd.DataFrame.from_dict({'ticker': ['P/L_fx'], 'amount_invested': [fx], 'p_l': [0], 'p_l_fx': [0]})
-    else:
+    elif fx < 0 and p_l >= 0:
         temp_df_pl = pd.DataFrame.from_dict({'ticker': ['P/L'], 'amount_invested': [p_l], 'p_l': [0], 'p_l_fx': [0]})
+        temp_df_plfx = pd.DataFrame.from_dict({'ticker': ['P/L_fx'], 'amount_invested': [0], 'p_l': [0], 'p_l_fx': [0]})
+    elif fx >=0 and p_l < 0:
+        temp_df_pl = pd.DataFrame.from_dict({'ticker': ['P/L'], 'amount_invested': [0], 'p_l': [0], 'p_l_fx': [0]})
+        temp_df_plfx = pd.DataFrame.from_dict({'ticker': ['P/L_fx'], 'amount_invested': [fx], 'p_l': [0], 'p_l_fx': [0]})
+    else:
+        temp_df_pl = pd.DataFrame.from_dict({'ticker': ['P/L'], 'amount_invested': [0], 'p_l': [0], 'p_l_fx': [0]})
         temp_df_plfx = pd.DataFrame.from_dict({'ticker': ['P/L_fx'], 'amount_invested': [0], 'p_l': [0], 'p_l_fx': [0]})
     temp_df_cash = pd.DataFrame.from_dict({'ticker': ['cash'], 'amount_invested': [cash], 'p_l': [0], 'p_l_fx': [0]})
     final_df = pd.concat([sorted_positions_invested_amount, temp_df_pl, temp_df_plfx, temp_df_cash])
