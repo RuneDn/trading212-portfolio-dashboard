@@ -44,7 +44,7 @@ All data can be downloaded (as a csv file) by navigating to the data tab, hoveri
 
 ---
 <h5>
-Note: The trading212 API doesn't return the actual ticker symbol of a stock and returns their internal mapping names instead. This means that for some stocks the ticker symbol won't be accurate. Unfortunately I cannot resolve this issue until they release more info.
+Note: The trading212 API doesn't return the actual ticker symbol of a stock and returns their internal mapping names instead. This means that for some stocks the ticker symbol won't be accurate and that for all UK (LSE) stocks many bugs are introduced such as pricing in pence and classification as ETF. Unfortunately I cannot resolve these issues (easily) until they release more info.
 </h5>
 
 ---
