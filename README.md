@@ -48,5 +48,3 @@ Note: The trading212 API doesn't return the actual ticker symbol of a stock and 
 </h5>
 
 ---
-
-By Rune De Neve
