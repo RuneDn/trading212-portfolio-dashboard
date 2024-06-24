@@ -23,6 +23,20 @@ def handle_base_df(base_df: pd.DataFrame):
             base_df.at[i, 'ticker'] = current_ticker.split('_')[0]
     return base_df
 
+def return_instruments(api_key):
+    instruments = connection.get_instruments(api_key)
+
+    ticker = []
+    type = []
+    currency_code = []
+
+    for i in instruments:
+        ticker.append(i['shortName'])
+        type.append(i['type'])
+        currency_code.append(i['currencyCode'])
+    
+    instruments_df = pd.DataFrame({'ticker': ticker, 'type': type, 'currency_code': currency_code})
+    return instruments_df
 
 def return_positions(api_key):
     positions = connection.get_positions(api_key)

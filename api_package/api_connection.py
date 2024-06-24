@@ -2,6 +2,18 @@ import requests
 import time
 
 
+def get_instruments(api_key):
+    url = "https://live.trading212.com/api/v0/equity/metadata/instruments"
+    headers = {"Authorization": f"{api_key}"}
+
+    try:
+        response = requests.get(url, headers=headers)
+        instruments = response.json()
+    except requests.exceptions.RequestException as e:
+        raise SystemExit(e)
+    return instruments
+
+
 def get_balances(api_key):
     url = "https://live.trading212.com/api/v0/equity/account/cash"
     headers = {"Authorization": f"{api_key}"}
