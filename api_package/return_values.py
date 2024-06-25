@@ -1,44 +1,27 @@
 import api_package.api_connection as connection
 import pandas as pd
 import numpy as np
-import re
 
-
-def is_etf(ticker):
-    pattern = '.*_.*_EQ'
-    if re.match(pattern, ticker):
-        return 0
-    else:
-        return 1
-    
-
-def handle_base_df(base_df: pd.DataFrame):
-    base_df['is_ETF'] = np.nan
-    for i, row in base_df.iterrows():
-        current_ticker = row['ticker']
-        base_df.at[i, 'is_ETF'] = round(is_etf(current_ticker))
-        if base_df['is_ETF'][i]:
-            base_df.at[i, 'ticker'] = current_ticker.split('_')[0][:-1]
-        else:
-            base_df.at[i, 'ticker'] = current_ticker.split('_')[0]
-    return base_df
 
 def return_instruments(api_key):
     instruments = connection.get_instruments(api_key)
-
     ticker = []
     type = []
     currency_code = []
+    short_name = []
 
     for i in instruments:
-        ticker.append(i['shortName'])
+        ticker.append(i['ticker'])
         type.append(i['type'])
         currency_code.append(i['currencyCode'])
+        short_name.append(i['shortName'])
     
-    instruments_df = pd.DataFrame({'ticker': ticker, 'type': type, 'currency_code': currency_code})
+    instruments_df = pd.DataFrame({'ticker': ticker, 'type': type, 'currency_code': currency_code,
+                                   'short_name': short_name})
     return instruments_df
 
-def return_positions(api_key):
+
+def return_positions(api_key, instruments_df):
     positions = connection.get_positions(api_key)
 
     ticker = []
@@ -58,11 +41,17 @@ def return_positions(api_key):
     
     positions_df = pd.DataFrame({'ticker': ticker, 'shares': shares, 'avg_price': avg_price,
                                  'current_price': current_price, 'p_l': p_l, 'p_l_fx': p_l_fx})
-    df = handle_base_df(positions_df)
-    return df
+    
+    positions_df['is_ETF'] = np.nan
+    for i, row in positions_df.iterrows():
+        positions_df.at[i, 'ticker'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'short_name'].values[0]
+        positions_df.at[i, 'is_ETF'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'type'].values[0]
+    positions_df['is_ETF'] = np.where(positions_df['is_ETF'] == 'ETF', 1, 0)
+
+    return positions_df
 
 
-def return_dividends(api_key):
+def return_dividends(api_key, instruments_df):
     dividends = connection.get_dividends(api_key)
     
     tickers = []
@@ -74,8 +63,12 @@ def return_dividends(api_key):
         amounts.append(div['amountInEuro'])
         pay_dates.append(div['paidOn'])
     dividends_df = pd.DataFrame({'ticker': tickers, 'amount': amounts, 'pay_date': pay_dates})
-    df = handle_base_df(dividends_df)
-    return df
+    dividends_df['is_ETF'] = np.nan
+    for i, row in dividends_df.iterrows():
+        dividends_df.at[i, 'ticker'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'short_name'].values[0]
+        dividends_df.at[i, 'is_ETF'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'type'].values[0]
+    dividends_df['is_ETF'] = np.where(dividends_df['is_ETF'] == 'ETF', 1, 0)
+    return dividends_df
 
 
 def return_balances(api_key):

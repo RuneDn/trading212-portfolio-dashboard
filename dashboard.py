@@ -7,8 +7,9 @@ from plots import dividend_plots as dplts
 
 @st.cache_data
 def load_data(api_key):
-    positions_df_temp = api.return_positions(api_key)
-    dividends_df_temp = api.return_dividends(api_key)
+    instruments = api.return_instruments(api_key)
+    positions_df_temp = api.return_positions(api_key, instruments)
+    dividends_df_temp = api.return_dividends(api_key, instruments)
     balances = api.return_balances(api_key)
     
     dividends_df = dplts.handle_base_dividends(dividends_df_temp)
@@ -86,21 +87,21 @@ with tab1:
         col_left, col_right = st.columns([1.3, 2])
         with col_left:
             st.write(f'Portfolio value: €{round(balances["amount_invested"] + balances["current_p_and_l"], 2)}')
-            st.write(f'Amount invested: €{balances["amount_invested"]}')        
+            st.write(f'Amount invested: €{round(balances["amount_invested"], 2)}')        
         with col_right:
-            st.write(f'Cash: €{balances["cash"]}')
+            st.write(f'Cash: €{round(balances["cash"], 2)}')
             if balances["current_p_and_l"] >= 0:
-                st.write(f'P/L: :green[€{balances["current_p_and_l"]}]')
+                st.write(f'P/L: :green[€{round(balances["current_p_and_l"], 2)}]')
             else:
-                st.write(f'P/L: :red[€{balances["current_p_and_l"]}]')
+                st.write(f'P/L: :red[€{round(balances["current_p_and_l"], 2)}]')
     with col2:
         total, stocks_total, etfs_total = etf_stock_div_values(dividends_df)
         st.subheader(f'Total dividends: :green[€{round(total, 2)}]', anchor=False)
         col111, col222 = st.columns([1.2, 2])
         with col111:
-            st.write(f'From stocks: :green[€{stocks_total}]')
+            st.write(f'From stocks: :green[€{round(stocks_total, 2)}]')
         with col222:
-            st.write(f"From etf's: :green[€{etfs_total}]")
+            st.write(f"From etf's: :green[€{round(etfs_total, 2)}]")
 with tab2:
     col_left1, col_left3 = st.columns([1.5, 2])
     with col_left1:
