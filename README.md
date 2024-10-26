@@ -28,13 +28,13 @@ The process of obtaining the data will only take several seconds for fairly 'new
 
 The resulting dashboard will look something like this example:
 
-![Dashboard](/images/example_dashboard_part1.png)
+![Dashboard](/images/example_dashboard_part1_blurred.png)
 
 Further down other graphs about the positions in the portfolio and the received dividends will be visible:
 
 ![Dashboard](/images/example_dashboard_part2.png)
-![Dashboard](/images/example_dashboard_part3.png)
-![Dashboard](/images/example_dashboard_part4.png)
+![Dashboard](/images/example_dashboard_part3_blurred.png)
+![Dashboard](/images/example_dashboard_part4_blurred.png)
 
 This last graph is interactive and any position that is held in the portfolio can be added in the textbox to view its dividend payout history.
 
