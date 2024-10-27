@@ -1,5 +1,34 @@
 import requests
 import time
+import numpy as np
+import pandas as pd
+import yfinance as yf
+
+
+def get_exchange_rate():
+    df = pd.DataFrame([[0, 0, 0], [0, 0, 0]])
+    df.columns = ['EUR', 'GBP', 'USD']
+    df.set_index(df.columns[0:2], inplace=True)
+    np.fill_diagonal(df.values, 1)
+
+    # to euro
+    gbp = yf.Ticker('GBPEUR=X')
+    usd = yf.Ticker('EUR=X') # TODO: change to gbx
+    hist1 = gbp.history(period="5d")
+    hist2 = usd.history(period="5d")
+    df.loc['EUR', 'GBP'] = hist1.tail(1)['Close'].item()
+    df.loc['EUR', 'USD'] = hist2.tail(1)['Close'].item()
+
+    # to gbp
+    eur = yf.Ticker('EURGBP=X')
+    usd = yf.Ticker('GBP=X') # TODO: change to gbx
+    hist1 = eur.history(period="5d")
+    hist2 = usd.history(period="5d")
+    df.loc['GBP', 'EUR'] = hist1.tail(1)['Close'].item()
+    df.loc['GBP', 'USD'] = hist2.tail(1)['Close'].item()
+
+    print(df)
+    return df
 
 
 def get_instruments(api_key):

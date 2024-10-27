@@ -10,7 +10,7 @@ def handle_base_dividends(base_df: pd.DataFrame):
     return base_df
 
 
-def fig_yearly_bar(df: pd.DataFrame):
+def fig_yearly_bar(df: pd.DataFrame, CURRENCY = 'EUR'):
     fig = plt.figure()
     ax = fig.add_subplot()
     x_vals = np.flip(df['year'].unique())
@@ -21,7 +21,7 @@ def fig_yearly_bar(df: pd.DataFrame):
     bar = plt.bar(x, df['amount'].groupby(df['year']).sum(), figure = fig, zorder = 3)
     for rect in bar:
         height = rect.get_height()
-        plt.text(rect.get_x() + rect.get_width() / 2.0, height, f'€{height:.0f}', ha='center', va='bottom', color=('white'))
+        plt.text(rect.get_x() + rect.get_width() / 2.0, height, f'{'€' if CURRENCY=='EUR' else '£'}{height:.0f}', ha='center', va='bottom', color=('white'))
     
     div_etfs = df['amount'][df['is_ETF'] == 1].groupby(df['year']).sum()
     div_stocks = df['amount'][df['is_ETF'] == 0].groupby(df['year']).sum()
@@ -46,7 +46,7 @@ def fig_yearly_bar(df: pd.DataFrame):
     return fig, df1, df2
 
 
-def stocks_etfs_div_line(df: pd.DataFrame, stocks = None):
+def stocks_etfs_div_line(df: pd.DataFrame, stocks = None, CURRENCY = 'EUR'):
     df['pay_date'] = pd.to_datetime(df['pay_date'])
     if 'ALL' in stocks:
         stocks = list(df['ticker'].unique())
@@ -61,7 +61,7 @@ def stocks_etfs_div_line(df: pd.DataFrame, stocks = None):
         ax.plot(x, y, zorder=3)
 
     totals_df = new_df.groupby('ticker').agg({"amount": ["count", "sum"]}).reset_index()
-    totals_df.columns = ['ticker', 'payments', 'total(€)']
+    totals_df.columns = ['ticker', 'payments', f'total{'€' if CURRENCY=='EUR' else '£'}']
 
     ax.spines['top'].set_color('#0E1117')
     ax.spines['right'].set_color('#0E1117')

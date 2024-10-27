@@ -5,10 +5,7 @@ import numpy as np
 
 def return_instruments(api_key):
     instruments = connection.get_instruments(api_key)
-    ticker = []
-    type = []
-    currency_code = []
-    short_name = []
+    ticker, type, currency_code, short_name = ([] for i in range(4))
 
     for i in instruments:
         ticker.append(i['ticker'])
@@ -23,13 +20,7 @@ def return_instruments(api_key):
 
 def return_positions(api_key, instruments_df):
     positions = connection.get_positions(api_key)
-
-    ticker = []
-    shares = []
-    avg_price = []
-    current_price = []
-    p_l = []
-    p_l_fx = []
+    ticker, shares, avg_price, current_price, p_l, p_l_fx = ([] for i in range(6))
 
     for p in positions:
         ticker.append(p['ticker'])
@@ -44,8 +35,8 @@ def return_positions(api_key, instruments_df):
     
     positions_df['is_ETF'] = np.nan
     for i, row in positions_df.iterrows():
-        positions_df.at[i, 'ticker'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'short_name'].values[0]
-        positions_df.at[i, 'is_ETF'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'type'].values[0]
+        positions_df.loc[i, 'ticker'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'short_name'].values[0]
+        positions_df.loc[i, 'is_ETF'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'type'].values[0]
     positions_df['is_ETF'] = np.where(positions_df['is_ETF'] == 'ETF', 1, 0)
 
     return positions_df
@@ -53,10 +44,7 @@ def return_positions(api_key, instruments_df):
 
 def return_dividends(api_key, instruments_df):
     dividends = connection.get_dividends(api_key)
-    
-    tickers = []
-    amounts = []
-    pay_dates = []
+    tickers, amounts, pay_dates = ([] for i in range(3))
 
     for div in dividends:
         tickers.append(div['ticker'])

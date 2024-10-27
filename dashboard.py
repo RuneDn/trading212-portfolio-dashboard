@@ -1,12 +1,18 @@
 import pandas as pd
 import streamlit as st
+import yfinance as yf
 from api_package import return_values as api
+from api_package import api_connection as connection
 from plots import position_plots as pplts
 from plots import dividend_plots as dplts
 
 
-@st.cache_data
+CURRENCY = 'EUR'
+
+
+@st.cache_data(show_spinner="Fetching data from trading 212")
 def load_data(api_key):
+    exchange_rates_df = connection.get_exchange_rate()
     instruments = api.return_instruments(api_key)
     positions_df_temp = api.return_positions(api_key, instruments)
     dividends_df_temp = api.return_dividends(api_key, instruments)
@@ -14,7 +20,7 @@ def load_data(api_key):
     
     dividends_df = dplts.handle_base_dividends(dividends_df_temp)
     positions_df = pplts.handle_base_positions(positions_df_temp)
-    return balances, dividends_df, positions_df
+    return balances, dividends_df, positions_df, exchange_rates_df
 
 
 def etf_stock_div_values(df: pd.DataFrame):
@@ -58,6 +64,13 @@ st.markdown(
         section[data-testid="stSidebar"] {
             width: 200px !important;
         }
+
+        button {
+            height: 10px;
+            width: 50px;
+            padding-top: 1px !important;
+            padding-bottom: 1px !important;
+        }
     </style>
     """,
     unsafe_allow_html=True,
@@ -67,14 +80,25 @@ st.markdown(
 if "my_input" not in st.session_state:
     st.session_state["my_input"] = ""
 
+st.write('Select account currency (EUR selected by default)')
+left, middle, right = st.columns([0.5, 0.5, 4])
+with left:
+    if st.button("EUR"):
+        CURRENCY = 'EUR'
+with middle:
+    if st.button("GBP"):
+        CURRENCY = 'GBP'
 
-api_key = st.text_input('Your trading :blue[212] API key here \
-                        (Trading 212 > Settings > API > Generate API Key)', st.session_state["my_input"])
+st.text('')
+st.text('')
+
+api_key = st.text_input('Paste your trading :blue[212] API key here \
+                        (Trading :blue[212] > Settings > API > Generate API Key)', st.session_state["my_input"])
 st.write("Note: Loading the data may take some time, mainly depending on the amount of dividend payouts, \
-         since the Trading 212 API only allows a set amount of requests per minute.")
+         since the Trading :blue[212] API only allows a set amount of requests per minute.")
 
 
-balances, dividends_df, positions_df = load_data(api_key)
+balances, dividends_df, positions_df, exchange_rates_df = load_data(api_key)
 
 st.divider()
 
@@ -83,25 +107,25 @@ tab1, tab2 = st.tabs(["Overview", "Breakdown"])
 with tab1:
     col1, col2 = st.columns([2, 2])
     with col1:
-        st.subheader(f'Account value: €{balances["account_value"]}', anchor=False)
+        st.subheader(f'Account value: {'€' if CURRENCY=='EUR' else '£'}{balances["account_value"]}', anchor=False)
         col_left, col_right = st.columns([1.3, 2])
         with col_left:
-            st.write(f'Portfolio value: €{round(balances["amount_invested"] + balances["current_p_and_l"], 2)}')
-            st.write(f'Amount invested: €{round(balances["amount_invested"], 2)}')        
+            st.write(f'Portfolio value: {'€' if CURRENCY=='EUR' else '£'}{round(balances["amount_invested"] + balances["current_p_and_l"], 2)}')
+            st.write(f'Amount invested: {'€' if CURRENCY=='EUR' else '£'}{round(balances["amount_invested"], 2)}')        
         with col_right:
-            st.write(f'Cash: €{round(balances["cash"], 2)}')
+            st.write(f'Cash: {'€' if CURRENCY=='EUR' else '£'}{round(balances["cash"], 2)}')
             if balances["current_p_and_l"] >= 0:
-                st.write(f'P/L: :green[€{round(balances["current_p_and_l"], 2)}]')
+                st.write(f'P/L: :green[{'€' if CURRENCY=='EUR' else '£'}{round(balances["current_p_and_l"], 2)}]')
             else:
-                st.write(f'P/L: :red[€{round(balances["current_p_and_l"], 2)}]')
+                st.write(f'P/L: :red[{'€' if CURRENCY=='EUR' else '£'}{round(balances["current_p_and_l"], 2)}]')
     with col2:
         total, stocks_total, etfs_total = etf_stock_div_values(dividends_df)
-        st.subheader(f'Total dividends: :green[€{round(total, 2)}]', anchor=False)
+        st.subheader(f'Total dividends: :green[{'€' if CURRENCY=='EUR' else '£'}{round(total, 2)}]', anchor=False)
         col111, col222 = st.columns([1.2, 2])
         with col111:
-            st.write(f'From stocks: :green[€{round(stocks_total, 2)}]')
+            st.write(f'From stocks: :green[{'€' if CURRENCY=='EUR' else '£'}{round(stocks_total, 2)}]')
         with col222:
-            st.write(f"From etf's: :green[€{round(etfs_total, 2)}]")
+            st.write(f"From etf's: :green[{'€' if CURRENCY=='EUR' else '£'}{round(etfs_total, 2)}]")
 with tab2:
     col_left1, col_left3 = st.columns([1.5, 2])
     with col_left1:
@@ -173,7 +197,7 @@ st.subheader('Dividends')
 
 col111, col222 = st.columns([2, 2])
 with col111:
-    yearly_div_bar, div_etfs, div_stocks = dplts.fig_yearly_bar(dividends_df)
+    yearly_div_bar, div_etfs, div_stocks = dplts.fig_yearly_bar(dividends_df, CURRENCY)
     tab11, tab22 = st.tabs(['Chart', 'Data'])
     
     with tab11:
@@ -191,7 +215,7 @@ with col222:
     with tab1:
         s = st.text_input("Position(s) - to add multiple tickers: msft, aapl, ... (not case sensitive)", value='MSFT')
         stocks_list = s.upper().replace(' ', '').split(',')
-        test = dplts.stocks_etfs_div_line(dividends_df, stocks_list)
+        test = dplts.stocks_etfs_div_line(dividends_df, stocks_list, CURRENCY)
         st.pyplot(test[0])
 
     with tab2:
