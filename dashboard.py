@@ -110,22 +110,22 @@ with tab1:
         st.subheader(f'Account value: {"€" if CURRENCY=="EUR" else "£"}{balances["account_value"]}', anchor=False)
         col_left, col_right = st.columns([1.3, 2])
         with col_left:
-            st.write(f'Portfolio value: {'€' if CURRENCY=='EUR' else '£'}{round(balances["amount_invested"] + balances["current_p_and_l"], 2)}')
-            st.write(f'Amount invested: {'€' if CURRENCY=='EUR' else '£'}{round(balances["amount_invested"], 2)}')        
+            st.write(f'Portfolio value: {"€" if CURRENCY=="EUR" else "£"}{round(balances["amount_invested"] + balances["current_p_and_l"], 2)}')
+            st.write(f'Amount invested: {"€" if CURRENCY=="EUR" else "£"}{round(balances["amount_invested"], 2)}')        
         with col_right:
-            st.write(f'Cash: {'€' if CURRENCY=='EUR' else '£'}{round(balances["cash"], 2)}')
+            st.write(f'Cash: {"€" if CURRENCY=="EUR" else "£"}{round(balances["cash"], 2)}')
             if balances["current_p_and_l"] >= 0:
-                st.write(f'P/L: :green[{'€' if CURRENCY=='EUR' else '£'}{round(balances["current_p_and_l"], 2)}]')
+                st.write(f'P/L: :green[{"€" if CURRENCY=="EUR" else "£"}{round(balances["current_p_and_l"], 2)}]')
             else:
-                st.write(f'P/L: :red[{'€' if CURRENCY=='EUR' else '£'}{round(balances["current_p_and_l"], 2)}]')
+                st.write(f'P/L: :red[{"€" if CURRENCY=="EUR" else "£"}{round(balances["current_p_and_l"], 2)}]')
     with col2:
         total, stocks_total, etfs_total = etf_stock_div_values(dividends_df)
-        st.subheader(f'Total dividends: :green[{'€' if CURRENCY=='EUR' else '£'}{round(total, 2)}]', anchor=False)
+        st.subheader(f'Total dividends: :green[{"€" if CURRENCY=="EUR" else "£"}{round(total, 2)}]', anchor=False)
         col111, col222 = st.columns([1.2, 2])
         with col111:
-            st.write(f'From stocks: :green[{'€' if CURRENCY=='EUR' else '£'}{round(stocks_total, 2)}]')
+            st.write(f'From stocks: :green[{"€" if CURRENCY=="EUR" else "£"}{round(stocks_total, 2)}]')
         with col222:
-            st.write(f"From etf's: :green[{'€' if CURRENCY=='EUR' else '£'}{round(etfs_total, 2)}]")
+            st.write(f"From etf's: :green[{"€" if CURRENCY=="EUR" else "£"}{round(etfs_total, 2)}]")
 with tab2:
     col_left1, col_left3 = st.columns([1.5, 2])
     with col_left1:
