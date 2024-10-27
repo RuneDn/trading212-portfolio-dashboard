@@ -107,7 +107,7 @@ tab1, tab2 = st.tabs(["Overview", "Breakdown"])
 with tab1:
     col1, col2 = st.columns([2, 2])
     with col1:
-        st.subheader(f'Account value: {'€' if CURRENCY=='EUR' else '£'}{balances["account_value"]}', anchor=False)
+        st.subheader(f'Account value: {"€" if CURRENCY=='EUR' else '£'}{balances["account_value"]}', anchor=False)
         col_left, col_right = st.columns([1.3, 2])
         with col_left:
             st.write(f'Portfolio value: {'€' if CURRENCY=='EUR' else '£'}{round(balances["amount_invested"] + balances["current_p_and_l"], 2)}')
