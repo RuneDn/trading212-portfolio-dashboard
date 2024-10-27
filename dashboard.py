@@ -125,7 +125,7 @@ with tab1:
         with col111:
             st.write(f'From stocks: :green[{"€" if CURRENCY=="EUR" else "£"}{round(stocks_total, 2)}]')
         with col222:
-            st.write(f"From etf's: :green[{"€" if CURRENCY=="EUR" else "£"}{round(etfs_total, 2)}]")
+            st.write(f"From etf's: :green[{'€' if CURRENCY=='EUR' else '£'}{round(etfs_total, 2)}]")
 with tab2:
     col_left1, col_left3 = st.columns([1.5, 2])
     with col_left1:
