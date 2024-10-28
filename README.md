@@ -41,10 +41,3 @@ This last graph is interactive and any position that is held in the portfolio ca
 To zoom in on a graph, hover over it and a symbol on the right side of the graph will apear. Click it.
 
 All data can be downloaded (as a csv file) by navigating to the data tab, hovering over the dataframe and clicking the download icon that will appear on top of the dataframe.
-
----
-<h5>
-Note: The trading212 API doesn't return the actual ticker symbol of a stock and returns their internal mapping names instead. This means that for some stocks the ticker symbol won't be accurate and that for all UK (LSE) stocks many bugs are introduced such as pricing in pence and classification as ETF. Unfortunately I cannot resolve these issues (easily) until they release more info.
-</h5>
-
----
