@@ -6,7 +6,9 @@ import squarify as sq
 from sklearn.preprocessing import MinMaxScaler
     
 
-def handle_base_positions(base_df: pd.DataFrame):
+def handle_base_positions(base_df: pd.DataFrame, currency, exchange_rates: pd.DataFrame):
+    for i, _ in base_df.iterrows():
+        base_df.loc[i, 'avg_price'] = base_df.loc[i, 'avg_price'] * exchange_rates.loc[currency, base_df.loc[i, 'currency']]
     base_df['amount_invested'] = base_df['shares'] * base_df['avg_price']
     base_df['position'] = base_df['amount_invested'] + base_df['p_l']
     base_df['return'] = round(base_df['p_l'] / base_df['amount_invested'], 4)

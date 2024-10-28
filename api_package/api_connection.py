@@ -6,7 +6,7 @@ import yfinance as yf
 
 
 def get_exchange_rate():
-    df = pd.DataFrame([[0, 0, 0], [0, 0, 0]])
+    df = pd.DataFrame([[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
     df.columns = ['EUR', 'GBP', 'USD']
     df.set_index(df.columns[0:2], inplace=True)
     np.fill_diagonal(df.values, 1)
@@ -27,7 +27,6 @@ def get_exchange_rate():
     df.loc['GBP', 'EUR'] = hist1.tail(1)['Close'].item()
     df.loc['GBP', 'USD'] = hist2.tail(1)['Close'].item()
 
-    print(df)
     return df
 
 

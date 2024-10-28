@@ -33,10 +33,12 @@ def return_positions(api_key, instruments_df):
     positions_df = pd.DataFrame({'ticker': ticker, 'shares': shares, 'avg_price': avg_price,
                                  'current_price': current_price, 'p_l': p_l, 'p_l_fx': p_l_fx})
     
-    positions_df['is_ETF'] = np.nan
+    positions_df['is_ETF'] = ''
+    positions_df['currency'] = ''
     for i, row in positions_df.iterrows():
         positions_df.loc[i, 'ticker'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'short_name'].values[0]
         positions_df.loc[i, 'is_ETF'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'type'].values[0]
+        positions_df.loc[i, 'currency'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'currency_code'].values[0]
     positions_df['is_ETF'] = np.where(positions_df['is_ETF'] == 'ETF', 1, 0)
 
     return positions_df
@@ -51,7 +53,7 @@ def return_dividends(api_key, instruments_df):
         amounts.append(div['amountInEuro'])
         pay_dates.append(div['paidOn'])
     dividends_df = pd.DataFrame({'ticker': tickers, 'amount': amounts, 'pay_date': pay_dates})
-    dividends_df['is_ETF'] = np.nan
+    dividends_df['is_ETF'] = ''
     for i, row in dividends_df.iterrows():
         dividends_df.at[i, 'ticker'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'short_name'].values[0]
         dividends_df.at[i, 'is_ETF'] = instruments_df.loc[instruments_df['ticker'] == row['ticker'], 'type'].values[0]

@@ -18,9 +18,7 @@ def load_data(api_key):
     dividends_df_temp = api.return_dividends(api_key, instruments)
     balances = api.return_balances(api_key)
     
-    dividends_df = dplts.handle_base_dividends(dividends_df_temp)
-    positions_df = pplts.handle_base_positions(positions_df_temp)
-    return balances, dividends_df, positions_df, exchange_rates_df
+    return balances, dividends_df_temp, positions_df_temp, exchange_rates_df
 
 
 def etf_stock_div_values(df: pd.DataFrame):
@@ -80,7 +78,7 @@ st.markdown(
 if "my_input" not in st.session_state:
     st.session_state["my_input"] = ""
 
-st.write('Select account currency (EUR selected by default)')
+st.write('Select preferred currency (EUR selected by default)')
 left, middle, right = st.columns([0.5, 0.5, 4])
 with left:
     if st.button("EUR"):
@@ -98,7 +96,9 @@ st.write("Note: Loading the data may take some time, mainly depending on the amo
          since the Trading :blue[212] API only allows a set amount of requests per minute.")
 
 
-balances, dividends_df, positions_df, exchange_rates_df = load_data(api_key)
+balances, dividends_df_temp, positions_df_temp, exchange_rates_df = load_data(api_key)
+dividends_df = dplts.handle_base_dividends(dividends_df_temp)
+positions_df = pplts.handle_base_positions(positions_df_temp, CURRENCY, exchange_rates_df)
 
 st.divider()
 
