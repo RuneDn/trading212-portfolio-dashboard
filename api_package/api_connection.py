@@ -6,28 +6,42 @@ import yfinance as yf
 
 
 def get_exchange_rate():
-    df = pd.DataFrame([[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
-    df.columns = ['EUR', 'GBP', 'USD']
+    df = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
+    df.columns = ['EUR', 'GBP', 'USD', 'GBX']
     df.set_index(df.columns[0:2], inplace=True)
     np.fill_diagonal(df.values, 1)
 
     # to euro
     gbp = yf.Ticker('GBPEUR=X')
-    usd = yf.Ticker('EUR=X') # TODO: change to gbx
+    usd = yf.Ticker('EUR=X')
     hist1 = gbp.history(period="5d")
     hist2 = usd.history(period="5d")
     df.loc['EUR', 'GBP'] = hist1.tail(1)['Close'].item()
     df.loc['EUR', 'USD'] = hist2.tail(1)['Close'].item()
+    df.loc['EUR', 'GBX'] = round((hist1.tail(1)['Close'].item() / 100), 5)
 
     # to gbp
     eur = yf.Ticker('EURGBP=X')
-    usd = yf.Ticker('GBP=X') # TODO: change to gbx
+    usd = yf.Ticker('GBP=X')
     hist1 = eur.history(period="5d")
     hist2 = usd.history(period="5d")
     df.loc['GBP', 'EUR'] = hist1.tail(1)['Close'].item()
     df.loc['GBP', 'USD'] = hist2.tail(1)['Close'].item()
+    df.loc['GBP', 'GBX'] = 0.01
 
     return df
+
+
+def get_metadata(api_key):
+    url = "https://live.trading212.com/api/v0/equity/account/info"
+    headers = {"Authorization": f"{api_key}"}
+
+    try:
+        response = requests.get(url, headers=headers)
+        metadata = response.json()
+    except requests.exceptions.RequestException as e:
+        raise SystemExit(e)
+    return metadata
 
 
 def get_instruments(api_key):

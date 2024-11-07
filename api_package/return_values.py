@@ -3,6 +3,13 @@ import pandas as pd
 import numpy as np
 
 
+def return_metadata(api_key):
+    metadata = connection.get_metadata(api_key)
+    id = metadata['id']
+    currency = metadata['currencyCode']
+    return id, currency
+
+
 def return_instruments(api_key):
     instruments = connection.get_instruments(api_key)
     ticker, type, currency_code, short_name = ([] for i in range(4))
