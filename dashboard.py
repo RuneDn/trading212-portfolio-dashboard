@@ -1,24 +1,21 @@
 import pandas as pd
 import streamlit as st
-import yfinance as yf
 from api_package import return_values as api
 from api_package import api_connection as connection
 from plots import position_plots as pplts
 from plots import dividend_plots as dplts
 
 
-CURRENCY = 'EUR'
-
-
 @st.cache_data(show_spinner="Fetching data from trading 212")
 def load_data(api_key):
+    _, acc_currency = api.return_metadata(api_key)
     exchange_rates_df = connection.get_exchange_rate()
     instruments = api.return_instruments(api_key)
     positions_df_temp = api.return_positions(api_key, instruments)
     dividends_df_temp = api.return_dividends(api_key, instruments)
     balances = api.return_balances(api_key)
     
-    return balances, dividends_df_temp, positions_df_temp, exchange_rates_df
+    return acc_currency, balances, dividends_df_temp, positions_df_temp, exchange_rates_df
 
 
 def etf_stock_div_values(df: pd.DataFrame):
@@ -78,17 +75,6 @@ st.markdown(
 if "my_input" not in st.session_state:
     st.session_state["my_input"] = ""
 
-st.write('Select preferred currency (EUR selected by default)')
-left, middle, right = st.columns([0.5, 0.5, 4])
-with left:
-    if st.button("EUR"):
-        CURRENCY = 'EUR'
-with middle:
-    if st.button("GBP"):
-        CURRENCY = 'GBP'
-
-st.text('')
-st.text('')
 
 api_key = st.text_input('Paste your trading :blue[212] API key here \
                         (Trading :blue[212] > Settings > API > Generate API Key)', st.session_state["my_input"])
@@ -96,7 +82,8 @@ st.write("Note: Loading the data may take some time, mainly depending on the amo
          since the Trading :blue[212] API only allows a set amount of requests per minute.")
 
 
-balances, dividends_df_temp, positions_df_temp, exchange_rates_df = load_data(api_key)
+acc_currency, balances, dividends_df_temp, positions_df_temp, exchange_rates_df = load_data(api_key)
+CURRENCY = acc_currency
 dividends_df = dplts.handle_base_dividends(dividends_df_temp)
 positions_df = pplts.handle_base_positions(positions_df_temp, CURRENCY, exchange_rates_df)
 
