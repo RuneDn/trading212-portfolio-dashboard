@@ -6,28 +6,44 @@ import yfinance as yf
 
 
 def get_exchange_rate():
-    df = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
-    df.columns = ['EUR', 'GBP', 'USD', 'GBX']
+    df = pd.DataFrame([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+    df.columns = ['EUR', 'GBP', 'USD', 'GBX', 'CAD', 'CHF']
     df.set_index(df.columns[0:2], inplace=True)
     np.fill_diagonal(df.values, 1)
 
     # to euro
     gbp = yf.Ticker('GBPEUR=X')
     usd = yf.Ticker('EUR=X')
-    hist1 = gbp.history(period="5d")
-    hist2 = usd.history(period="5d")
-    df.loc['EUR', 'GBP'] = hist1.tail(1)['Close'].item()
-    df.loc['EUR', 'USD'] = hist2.tail(1)['Close'].item()
-    df.loc['EUR', 'GBX'] = round((hist1.tail(1)['Close'].item() / 100), 5)
+    cad = yf.Ticker('CADEUR=X')
+    chf = yf.Ticker('CHFEUR=X')
 
     # to gbp
     eur = yf.Ticker('EURGBP=X')
-    usd = yf.Ticker('GBP=X')
-    hist1 = eur.history(period="5d")
-    hist2 = usd.history(period="5d")
-    df.loc['GBP', 'EUR'] = hist1.tail(1)['Close'].item()
-    df.loc['GBP', 'USD'] = hist2.tail(1)['Close'].item()
-    df.loc['GBP', 'GBX'] = 0.01
+    usd2 = yf.Ticker('GBP=X')
+    cad2 = yf.Ticker('CADGBP=X')
+    chf2 = yf.Ticker('CHFGBP=X')
+
+    for col in df.columns:
+        if col == 'EUR':
+            hist = eur.history(period="5d")
+            df.loc['GBP', 'EUR'] = hist.tail(1)['Close'].item()
+        elif (col == 'GBP') | (col == 'GBX'):
+            hist = gbp.history(period="5d")
+            df.loc['EUR', 'GBP'] = hist.tail(1)['Close'].item()
+            df.loc['EUR', 'GBX'] = round((hist.tail(1)['Close'].item() / 100), 5)
+            df.loc['GBP', 'GBX'] = 0.01
+        else:
+            if col == 'USD':
+                hist1 = usd.history(period="5d")
+                hist2 = usd2.history(period="5d")
+            if col == 'CAD':
+                hist1 = cad.history(period="5d")
+                hist2 = cad2.history(period="5d")
+            if col == 'CHF':
+                hist1 = chf.history(period="5d")
+                hist2 = chf2.history(period="5d")
+            df.loc['EUR', col] = hist1.tail(1)['Close'].item()
+            df.loc['GBP', col] = hist2.tail(1)['Close'].item()
 
     return df
 
@@ -83,7 +99,7 @@ def get_dividends(api_key):
     headers = {"Authorization": f"{api_key}"}
     dividends = {'items': [], 'nextPagePath': ""}
     while True:
-        if len(dividends["items"]) == 0:
+        if len(dividends["items"]) == 0: 
             query = {"cursor": "", "ticker": "", "limit": "50"}
         else: 
             query = {"cursor": f"{dividends['nextPagePath']}", "ticker": "", "limit": "50"}

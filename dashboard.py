@@ -72,8 +72,7 @@ st.markdown(
 )
 
 
-if "my_input" not in st.session_state:
-    st.session_state["my_input"] = ""
+if "my_input" not in st.session_state: st.session_state["my_input"] = ""
 
 
 api_key = st.text_input('Paste your trading :blue[212] API key here \
@@ -83,7 +82,8 @@ st.write("Note: Loading the data may take some time, mainly depending on the amo
 
 
 acc_currency, balances, dividends_df_temp, positions_df_temp, exchange_rates_df = load_data(api_key)
-CURRENCY = acc_currency
+if acc_currency in ('EUR', 'GBP'): CURRENCY = acc_currency 
+else: CURRENCY = 'EUR'
 dividends_df = dplts.handle_base_dividends(dividends_df_temp)
 positions_df = pplts.handle_base_positions(positions_df_temp, CURRENCY, exchange_rates_df)
 
