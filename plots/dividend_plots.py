@@ -58,7 +58,10 @@ def stocks_etfs_div_line(df: pd.DataFrame, stocks = None, CURRENCY = 'EUR'):
     for s in stocks:
         x = new_df['pay_date'][new_df['ticker'] == s]
         y = new_df['amount'][new_df['ticker'] == s]
-        ax.plot(x, y, zorder=3)
+        if len(x) == 1:
+            ax.plot(x, y, 'o', zorder=3)
+        else:
+            ax.plot(x, y, zorder=3)
 
     totals_df = new_df.groupby('ticker').agg({"amount": ["count", "sum"]}).reset_index()
     totals_df.columns = ['ticker', 'payments', f'total{"€" if CURRENCY=="EUR" else "£"}']
