@@ -6,44 +6,23 @@ import yfinance as yf
 
 
 def get_exchange_rate():
+    api_link = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/'
     df = pd.DataFrame([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
-    df.columns = ['EUR', 'GBP', 'USD', 'GBX', 'CAD', 'CHF']
+    currencies = ['EUR', 'GBP', 'USD', 'GBX', 'CAD', 'CHF']
+    df.columns = currencies
     df.set_index(df.columns[0:2], inplace=True)
     np.fill_diagonal(df.values, 1)
 
-    # to euro
-    gbp = yf.Ticker('GBPEUR=X')
-    usd = yf.Ticker('EUR=X')
-    cad = yf.Ticker('CADEUR=X')
-    chf = yf.Ticker('CHFEUR=X')
+    for currency in currencies:
+        if currency != 'GBX':
+            link =  api_link + currency.lower() + '.json'
+            request = requests.get(link)
+            data = request.json()[currency.lower()]
 
-    # to gbp
-    eur = yf.Ticker('EURGBP=X')
-    usd2 = yf.Ticker('GBP=X')
-    cad2 = yf.Ticker('CADGBP=X')
-    chf2 = yf.Ticker('CHFGBP=X')
-
-    for col in df.columns:
-        if col == 'EUR':
-            hist = eur.history(period="5d")
-            df.loc['GBP', 'EUR'] = hist.tail(1)['Close'].item()
-        elif (col == 'GBP') | (col == 'GBX'):
-            hist = gbp.history(period="5d")
-            df.loc['EUR', 'GBP'] = hist.tail(1)['Close'].item()
-            df.loc['EUR', 'GBX'] = round((hist.tail(1)['Close'].item() / 100), 5)
-            df.loc['GBP', 'GBX'] = 0.01
-        else:
-            if col == 'USD':
-                hist1 = usd.history(period="5d")
-                hist2 = usd2.history(period="5d")
-            if col == 'CAD':
-                hist1 = cad.history(period="5d")
-                hist2 = cad2.history(period="5d")
-            if col == 'CHF':
-                hist1 = chf.history(period="5d")
-                hist2 = chf2.history(period="5d")
-            df.loc['EUR', col] = hist1.tail(1)['Close'].item()
-            df.loc['GBP', col] = hist2.tail(1)['Close'].item()
+            df.loc['EUR', currency] = data['eur']
+            df.loc['GBP', currency] = data['gbp']
+        df.loc['GBP', 'GBX'] = 0.01
+        df.loc['EUR', 'GBX'] = round(df.loc['EUR', 'GBP'] / 100, 6)
 
     return df
 
