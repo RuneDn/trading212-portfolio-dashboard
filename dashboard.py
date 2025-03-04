@@ -78,7 +78,7 @@ if "my_input" not in st.session_state: st.session_state["my_input"] = ""
 api_key = st.text_input('Paste your trading :blue[212] API key here \
                         (Trading :blue[212] > Settings > API > Generate API Key)', st.session_state["my_input"])
 st.write("Note: Loading the data may take some time, mainly depending on the amount of dividend payouts, \
-         since the Trading :blue[212] API only allows a set amount of requests per minute.")
+         since the Trading :blue[212] servers only allow a set amount of requests per minute.")
 
 
 acc_currency, balances, dividends_df_temp, positions_df_temp, exchange_rates_df = load_data(api_key)
@@ -198,7 +198,7 @@ with col111:
             st.write("Stocks:")
             st.write(div_stocks)
 with col222:
-    tab1, tab2, tab3 = st.tabs(["Chart", "Data", "More metrics"])
+    tab1, tab2, tab3 = st.tabs(["Chart", "Data", "Summary"])
     with tab1:
         s = st.text_input("Position(s) - to add multiple tickers: msft, aapl, ... (not case sensitive)", value='MSFT')
         stocks_list = s.upper().replace(' ', '').split(',')
