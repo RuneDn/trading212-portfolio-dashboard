@@ -9,12 +9,9 @@ st.markdown(
             
             Created by Rune De Neve.
             
-            (Student Business Engineering: Data Analytics at Ghent University)
-
             ---
+            
             Contact me:
-
-            LinkedIn: [Rune De Neve](https://www.linkedin.com/in/rune-de-neve)
             
             E-mail: runedeneve@hotmail.be
 
