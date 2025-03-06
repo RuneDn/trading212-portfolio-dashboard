@@ -66,6 +66,10 @@ st.markdown(
             padding-top: 1px !important;
             padding-bottom: 1px !important;
         }
+
+        .small-font {
+            font-size:12px !important;
+        }
     </style>
     """,
     unsafe_allow_html=True,
@@ -76,7 +80,10 @@ if "my_input" not in st.session_state: st.session_state["my_input"] = ""
 
 
 api_key = st.text_input('Paste your trading :blue[212] API key here \
-                        (Trading :blue[212] > Settings > API > Generate API Key)', st.session_state["my_input"])
+                        (Trading :blue[212] > Settings > API > Generate API Key :red[*])', st.session_state["my_input"])
+st.markdown("<p class='small-font'><span style='color: red'>*</span> Minimum API key allowances needed: Account data, History-Dividends, metadata, portfolio. \
+            (No personal data can be retrieved from the API, only data such as amount of cash in the account, default currency, gains/losses... \
+            Visit <a href='https://t212public-api-docs.redoc.ly'>API Documentation</a> for more info)</p>", unsafe_allow_html=True)
 st.write("Note: Loading the data may take some time, mainly depending on the amount of dividend payouts, \
          since the Trading :blue[212] servers only allow a set amount of requests per minute.")
 
